@@ -1,0 +1,36 @@
+name: 'Set AssemblyInfo Version'
+author: 'Second Bounce'
+description: 'Sets the assembly version number in the specified assembly info file(s)'
+branding:
+  icon: 'tag'
+  color: 'orange'
+inputs:
+  version:
+    description: 'Assembly version in SemVer format'
+    required: true
+  directory:
+    description: 'Directory where assembly info file is located'
+    default: '.\'
+  filename:
+    description: 'Filename for assembly info'
+    default: 'AssemblyInfo.cs'
+  recursive:
+    description: 'If `true`, update all assembly info files including in files in subdirectories'
+    default: true
+runs:
+  using: composite
+  steps:
+    - shell: pwsh
+      id: setversion
+      env:
+        VERSION:  ${{ inputs.version }}
+        DIRECTORY:  ${{ inputs.directory }}
+        FILENAME: ${{ inputs.filename }}
+        RECURSIVE:  ${{ inputs.recursive }}
+        RUN_NUMBER: ${{ github.run_number }}
+      run: ${{ github.action_path }}\SetVersion.ps1
+outputs:
+  version:
+    description: Version applied to assembly info
+    value: ${{steps.setversion.outputs.version}}
+    

@@ -1,0 +1,36 @@
+name: test-actions
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+
+      - name: Test setting version using default parameters
+        uses: secondbounce/assemblyinfo-update/set-version@v1
+        with:
+          version: '8.8'
+
+      - name: Test setting version with custom parameters
+        id: test-setversion
+        uses: secondbounce/assemblyinfo-update/set-version@v1
+        with:
+          version: '9.9.9-alpha'
+          directory: './test/'
+          filename: 'SharedAssemblyInfo.cs'
+          recursive: false
+
+      - name: Upload updated files
+        uses: actions/upload-artifact@v3
+        with:
+          name: Test results for version '${{steps.test-setversion.outputs.version}}'
+          path: ./test/*.cs
