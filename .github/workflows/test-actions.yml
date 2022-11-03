@@ -3,7 +3,8 @@ name: test-actions
 on:
   push:
     branches:
-      - master
+      - develop
+      - main
   pull_request:
   workflow_dispatch:
 
@@ -16,21 +17,28 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Test setting version using default parameters
-        uses: secondbounce/assemblyinfo-update/set-version@v1
+        id: test-setversion
+        uses: ./    # Just point to the main folder so the latest code is always used
         with:
           version: '8.8'
 
+      - name: Test output of 'assemblyinfo-update'
+        run: echo "AssemblyInfo updated to ${{steps.test-setversion.outputs.version}}"
+
       - name: Test setting version with custom parameters
-        id: test-setversion
-        uses: secondbounce/assemblyinfo-update/set-version@v1
+        id: test-setversion-with-params
+        uses: ./    # Just point to the main folder so the latest code is always used
         with:
           version: '9.9.9-alpha'
           directory: './test/'
           filename: 'SharedAssemblyInfo.cs'
           recursive: false
 
+      - name: Test output of 'assemblyinfo-update'
+        run: echo "AssemblyInfo updated to ${{steps.test-setversion-with-params.outputs.version}}"
+
       - name: Upload updated files
         uses: actions/upload-artifact@v3
         with:
-          name: Test results for version '${{steps.test-setversion.outputs.version}}'
+          name: Test results for version '${{steps.test-setversion-with-params.outputs.version}}'
           path: ./test/*.cs
