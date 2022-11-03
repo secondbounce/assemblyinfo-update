@@ -3,6 +3,7 @@ $directory = $Env:DIRECTORY
 $fileName = $Env:FILENAME
 $recursive = [System.Convert]::ToBoolean($Env:RECURSIVE)
 $runNumber = $Env:RUN_NUMBER
+$githubOutput = $Env:GITHUB_OUTPUT
 
 function SetVersion($file)
 {
@@ -15,7 +16,7 @@ function SetVersion($file)
 		$streamWriter.Write($contents)
 		$streamWriter.Close()
 
-		"::set-output name=version::$version"
+		Write-Output "version=$version" >> $githubOutput
 		Write-Host "$file is now set to version $version"
 	}
 	else
