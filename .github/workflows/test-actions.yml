@@ -38,7 +38,7 @@ jobs:
         run: echo "AssemblyInfo updated to ${{steps.test-setversion-with-params.outputs.version}}"
 
       - name: Upload updated files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Test results for version '${{steps.test-setversion-with-params.outputs.version}}'
           path: ./test/*.cs
